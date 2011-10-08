@@ -2,6 +2,9 @@
 /**
 * 
 */
+namespace Serene;
+use Serene\Core as Core;
+
 class Application
 {
 	public $config;
@@ -13,9 +16,9 @@ class Application
 		/**
 		* Require the base templates for the controllers, etc
 		**/
-		require_once('Core/base/baseController.php');
-		require_once('Core/base/baseModel.php');
-		require_once('Core/base/baseRoute.php');
+		require_once('Core/Base/Controller.php');
+		require_once('Core/Base/Model.php');
+		require_once('Core/Base/Route.php');
 		/**
 		* Require all the core files for the framework
 		**/
@@ -28,10 +31,10 @@ class Application
 
 	public function start()
 	{
-		$this->config = Config::getInstance();
-		$this->load = new Load($this->config);
-		$this->router = new Router($this->config);
-		$this->dispatcher = new Dispatcher($this->load, $this->router->getRoute());
+		$this->config = Core\Config::getInstance();
+		$this->load = new Core\Load($this->config);
+		$this->router = new Core\Router($this->config);
+		$this->dispatcher = new Core\Dispatcher($this->load, $this->router->getRoute());
 	}
 
 

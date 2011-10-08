@@ -1,8 +1,10 @@
 <?php 
-
 /**
 * 
 */
+
+namespace Serene\Core;
+
 class Dispatcher
 {
 	public $load;
@@ -15,7 +17,7 @@ class Dispatcher
 		$this->runMethod($dispatchCall['method'], $dispatchCall['args']);				
 	}
 
-	public function loadController($controller)
+	protected function loadController($controller)
 	{
 		$this->controllerInstance = $this->load->controller($controller);
 		if ($this->controllerInstance === false)
@@ -25,7 +27,7 @@ class Dispatcher
 		}
 	}
 
-	public function runMethod($method, array $args)
+	protected function runMethod($method, array $args)
 	{
 		if (method_exists($this->controllerInstance, $method))
 		{

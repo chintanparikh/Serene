@@ -9,6 +9,9 @@
  * Changelog:
  *
  */
+
+namespace Serene\Core;
+
 class Config
 {
 	/**

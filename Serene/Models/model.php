@@ -2,7 +2,10 @@
 /**
 * 
 */
-class Model extends baseModel
+namespace Serene\Model;
+use Serene\Core\Base as Base;
+
+class Model extends Base\Model
 {
 	
 	function __construct()

@@ -14,7 +14,12 @@
  *  new Route('blog/{*}', 'blog_controller/{method}/{args}');
  *  new Route('someString/aController/{*}', '{0}/{controller}/{method}/{args}');
  */
-class Route implements BaseRoute
+
+namespace Serene\Core;
+
+use Serene\Core\Base as Base;
+
+class Route implements Base\Route
 {
 	/**
 	 * The path that the Route will apply for

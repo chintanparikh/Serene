@@ -2,11 +2,14 @@
 /**
 * 
 */
-class Test extends baseController
+namespace Serene\Controller;
+
+use Serene\Core\Base as Base;
+
+class Test extends Base\Controller
 {
 	public function __construct()
-	{
-		
+	{		
 	}
 	public function index()
 	{

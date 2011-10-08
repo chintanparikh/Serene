@@ -2,7 +2,11 @@
 /**
 * 
 */
-class Controller extends baseController
+namespace Serene\Controller;
+
+use Serene\Core\Base as Base;
+
+class Controller extends Base\Controller
 {
 
 	function index()

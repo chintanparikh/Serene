@@ -10,6 +10,9 @@
  * Changelog:
  *
  */
+
+namespace Serene\Core;
+
 class Load
 {
 	/**
@@ -35,8 +38,13 @@ class Load
 	{
 		if (file_exists( $this->config->load('controllerPath') . '/' . $filename . '.php' ))
 		{
-			require_once $this->config->load('controllerPath') . '/' . $filename . '.php'; 
-			return new $filename($this, $this->config);
+			require_once $this->config->load('controllerPath') . '/' . $filename . '.php';
+			$class = '\\Serene\\Controller\\' . $filename;
+			return new $class($this, $this->config);
+		}
+		else
+		{
+			throw new Exception('Controller does not exist!');
 		}
 
 		return false;
@@ -51,8 +59,9 @@ class Load
      */
 	public function model($filename)
 	{
-		require_once $this->config->load('modelPath') . '/' . $filename . '.php'; 
-		return new $filename;
+		require_once $this->config->load('modelPath') . '/' . $filename . '.php';
+		$model = '\\Serene\\Model\\' . $filename; 
+		return new $model;
 	}
 
 	/**

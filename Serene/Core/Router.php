@@ -2,6 +2,11 @@
 /**
 * 
 */
+
+namespace Serene\Core;
+
+use Serene\Core\Base as Base;
+
 class Router
 {
 	/**
@@ -86,7 +91,7 @@ class Router
 	 * @param Route $route 
 	 * @return null
 	 */
-	public function add(BaseRoute $route)
+	public function add(Base\Route $route)
 	{
 		array_push($this->routes, $route);		
 	}
