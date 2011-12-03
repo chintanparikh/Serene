@@ -161,7 +161,7 @@ class Route implements Base\Route
 			/*
 			 * If the segment = {*}, then we know the rest of the string matches, because {*} matches anything, and must come last
 			 */
-			if ($pathPart == WILDCARD)
+			if ($pathPart == self::WILDCARD)
 			{
 				return true;
 			}
@@ -179,7 +179,7 @@ class Route implements Base\Route
 
 	protected function controllerSegmentExistsInPath()
 	{
-		return array_key_exists(CONTROLLER, $this->patternParts);
+		return array_key_exists(self::CONTROLLER, $this->patternParts);
 	}
 
 	protected function returnExplicitController($patternPart, $position)
@@ -239,7 +239,7 @@ class Route implements Base\Route
 		/*
 		 * Here, if the controller is not explcitly set by the pattern, but rather a {controller} is used, and the controller must be extracted from the URI
 		 */
-		if ($patternPart == CONTROLLER && $position <= count($uriParts) - 1)
+		if ($patternPart == self::CONTROLLER && $position <= count($uriParts) - 1)
 		{
 			$this->controllerPosition = $position;
 			return $uriParts[$position];
@@ -247,7 +247,7 @@ class Route implements Base\Route
 		/*
 		 * Here, if {0} is used, skip to the next part of the string
 		 */
-		elseif ($patternPart == IGNORE)
+		elseif ($patternPart == self::IGNORE)
 		{
 			return $this->getController($URI, $position + 1);
 		}
@@ -318,7 +318,7 @@ class Route implements Base\Route
 		 */
 		if (preg_match('~\{[a-x0-9]+?\}~', $patternPart) != 1)
 		{
-			if (array_search(METHOD, $patternParts) != false)
+			if (array_search(self::METHOD, $patternParts) != false)
 			{
 				throw new \Exception('Both a string and parameter method have been set in the Pattern');
 			}
@@ -332,7 +332,7 @@ class Route implements Base\Route
 		/*
 		 * Here, if the method is not explcitly set by the pattern, but rather a {method} is used, and the method must be extracted from the URI
 		 */
-		elseif ($patternPart == METHOD && $position <= count($uriParts) - 1)
+		elseif ($patternPart == self::METHOD && $position <= count($uriParts) - 1)
 		{
 			$this->methodPosition = $position;
 			return $uriParts[$position];
@@ -405,7 +405,7 @@ class Route implements Base\Route
 			/*
 			 * Otherwise, extract the args from uriParts
 			 */
-			elseif ($patternPart == ARGS)
+			elseif ($patternPart == self::ARGS)
 			{
 				$uriPosition = 0;
 				while ($patternPosition > $uriPosition)
