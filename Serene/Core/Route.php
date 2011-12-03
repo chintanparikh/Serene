@@ -56,11 +56,27 @@ class Route implements Base\Route
 	 */	
 	protected $methodPosition;
 
-	public function __construct($path, $pattern)
+	public function __construct($path, $pattern, $config = NULL)
 	{
 		$this->path = strtolower($path);
 		$this->pattern = strtolower($pattern);
-		$this->config = Config::getInstance();
+		$this->config = $this->getConfig($config);
+	}
+
+	protected function getConfig($config)
+	{
+		if ($config == NULL)
+		{
+			return Config::getInstance();
+		}
+		elseif ($config instanceof Config)
+		{
+			return $config;
+		}
+		else
+		{
+			throw new \Exception("Config not supplied correct in Route.php");
+		}
 	}
 
 	protected function validate()
