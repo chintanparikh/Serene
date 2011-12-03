@@ -23,4 +23,3 @@ $config['load']['assetPath'] = BASE_PATH . '/Assets';
 * The path where the errorfiles are stored
 */
 $config['load']['errorPath'] = BASE_PATH . '/Errors';
-?>

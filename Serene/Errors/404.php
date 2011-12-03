@@ -12,5 +12,3 @@ class error404 extends Application
 	}
 }
 
-
-?>

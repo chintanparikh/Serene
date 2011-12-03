@@ -10,45 +10,34 @@
  *
  *
  */
+
+namespace Serene\Libraries;
+
 class Database 
 {
 
     /************PROPERTIES************/
 
     /**
-     * The username for the database
+     * The DSN for connection
+     *
+     * @var string
+     */
+    protected $dsn;
+
+    /**
+     * The username
      *
      * @var string
      */
     protected $username;
 
     /**
-     * The password for the database
+     * The password
      *
      * @var string
      */
     protected $password;
-
-    /**
-     * The database host - usually 'localhost' will do fine
-     *
-     * @var string
-     */
-    protected $host;
-
-    /**
-     * The port for the database
-     *
-     * @var int
-     */
-    protected $port;
-
-    /**
-     * The name of the database
-     *
-     * @var string
-     */
-    protected $databaseName;
 
     /**
      * Holds the PDO Object
@@ -95,18 +84,18 @@ class Database
      */
     public static function getInstance()
     {
-
-        if(!self::$instance){
+        if (!self::$instance)
+        {
             $args = func_get_args();
-            if( isset($args[0]) )
+            if (isset($args[0]))
             {
-                if( is_array($args[0]) )
+                if (is_array($args[0]))
                 {
                     self::$instance = new Database($args[0]);
                 }
                 else
                 {
-                    throw new Exception('Database Information is not in the correct format, it must be an array!');                    
+                    throw new Exception('Database Information is not in the correct format, it must be an array containing the dns, username and password!');                    
                 }
             }
             else
@@ -125,14 +114,11 @@ class Database
      * @param array $databaseInfo
      * @return void
      */
-    private function __construct(array $databaseInfo)
+    private function __construct(array $dbInfo)
     {
-        extract($databaseInfo);
-        $this->host = $host;
-        $this->port = $port;
-        $this->databaseName = $name;
-        $this->username = $username;
-        $this->password = $password;
+        $this->dsn = $dbInfo['dsn'];
+        $this->username = $dbInfo['username'];
+        $this->password = $dbInfo['password'];
         $this->connect();     
     }
 
@@ -153,8 +139,7 @@ class Database
      */    
     function connect()
     {
-        $dsn = "mysql:host=$this->host;port=$this->port;dbname=$this->databaseName";
-        $this->connection = new PDO($dsn, $this->username, $this->password);
+        $this->connection = new PDO($this->dsn, $this->username, $this->password);
         return $this;
     }
 
@@ -187,6 +172,7 @@ class Database
 
     /**
      * Binds parameters to the query and executes the query
+     * The arguments supplied to execute() are bound to the '?' in the prepared statement
      *
      * @access public
      * @param array $param An array of the parameters that need to be binded
@@ -195,10 +181,13 @@ class Database
     function execute()
     {
         $toBind = func_get_args();
-        if($this->isPrepared == 1){        
+        if ($this->isPrepared == 1)
+        {        
             $paramNumber = 1;
-            if($toBind){
-                foreach($toBind as $bind){
+            if (!empty($toBind))
+            {
+                foreach ($toBind as $bind)
+                {
                     $this->statement->bindValue($paramNumber, $bind);
                     $paramNumber++;
                 }
@@ -206,7 +195,8 @@ class Database
             $this->statement->execute();
             return $this->statement;
         }
-        else{
+        else
+        {
             throw new Exception("Statement must be prepared before executing");
         }
     
@@ -232,12 +222,14 @@ class Database
      */ 
     function commit()
     {
-        if($this->transaction == true){            
+        if ($this->transaction)
+        {            
             $this->connection->commit();
             $this->transaction = false;
             return $this;
         }
-        else{
+        else
+        {
             throw new Exception('Transaction as not been initated');
         }
     }
@@ -250,12 +242,14 @@ class Database
      */ 
     function rollBack()
     {
-        if($this->transaction == true){            
+        if ($this->transaction)
+        {            
             $this->connection->rollBack();
             $this->transaction = false;
             return $this;
         }
-        else{
+        else
+        {
             throw new Exception('Transaction as not been initated');
         }
     }
@@ -281,8 +275,7 @@ class Database
     function numRows($table)
     {
         $this->prepare("SELECT COUNT(*) FROM `?`");
-        return count($this->execute($this->makeArray($table))->fetchAll());
-
+        return count($this->execute(array($table))->fetchAll());
     }
 
 
@@ -318,5 +311,3 @@ catch(Exception $e){
 }
 
 */
-
-?>

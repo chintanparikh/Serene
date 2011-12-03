@@ -22,7 +22,7 @@ class Dispatcher
 		$this->controllerInstance = $this->load->controller($controller);
 		if ($this->controllerInstance === false)
 		{
-			throw new Exception("The controller '{$controller}' could not be loaded");
+			throw new \Exception("The controller '{$controller}' could not be loaded");
 			return false;
 		}
 	}
@@ -35,12 +35,10 @@ class Dispatcher
 		}
 		else
 		{
-			throw new Exception("The method '{$method}' does not exist");
+			throw new \Exception("The method '{$method}' does not exist");
 		}
 	}
 
 
 
 }
-
-?>

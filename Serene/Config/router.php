@@ -17,4 +17,3 @@ $config['router']['defaultRoutingPattern'] = '{controller}/{method}/{args}';
 */
 $config['router']['path'] = 'Serene';
 
-?>

@@ -2,7 +2,7 @@
 /**
 * 
 */
-namespace Serene\Controller;
+namespace Serene\Controllers;
 
 use Serene\Core\Base as Base;
 
@@ -23,4 +23,3 @@ class Controller extends Base\Controller
 	}
 }
 
-?>

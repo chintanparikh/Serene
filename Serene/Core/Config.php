@@ -69,7 +69,7 @@ class Config
 			}
 			else
 			{
-				throw new Exception('Config file is not formatted properly');
+				throw new \Exception('Config file is not formatted properly');
 			}
 		}
 		else
@@ -96,7 +96,7 @@ class Config
 			}
 			else
 			{
-				throw new Exception("Config file {$path} does not exist!");
+				throw new \Exception("Config file {$path} does not exist!");
 			}
 		}
 		/*
@@ -107,4 +107,3 @@ class Config
 	
 }
 
-?>

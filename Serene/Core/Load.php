@@ -39,12 +39,8 @@ class Load
 		if (file_exists( $this->config->load('controllerPath') . '/' . $filename . '.php' ))
 		{
 			require_once $this->config->load('controllerPath') . '/' . $filename . '.php';
-			$class = '\\Serene\\Controller\\' . $filename;
+			$class = '\\Serene\\Controllers\\' . $filename;
 			return new $class($this, $this->config);
-		}
-		else
-		{
-			throw new Exception('Controller does not exist!');
 		}
 
 		return false;
@@ -114,5 +110,3 @@ class Load
 
 }
 
-
-?>

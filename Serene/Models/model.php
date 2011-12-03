@@ -4,6 +4,7 @@
 */
 namespace Serene\Model;
 use Serene\Core\Base as Base;
+use Serene\Core\Libraries as Library;
 
 class Model extends Base\Model
 {
@@ -22,5 +23,3 @@ class Model extends Base\Model
 		return $dummyArray;
 	}
 }
-
-?>

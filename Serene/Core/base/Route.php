@@ -13,5 +13,3 @@ interface Route
 
 	public function getArgs($URI);
 }
-
-?>

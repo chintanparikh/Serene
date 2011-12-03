@@ -159,7 +159,7 @@ class Route implements Base\Route
 		{
 			if (array_search('{controller}', $patternParts) != false)
 			{
-				throw new Exception('Both a string and parameter controller have been set in the Pattern');
+				throw new \Exception('Both a string and parameter controller have been set in the Pattern');
 			}
 			else
 			{
@@ -247,7 +247,7 @@ class Route implements Base\Route
 		{
 			if (array_search('{method}', $patternParts) != false)
 			{
-				throw new Exception('Both a string and parameter method have been set in the Pattern');
+				throw new \Exception('Both a string and parameter method have been set in the Pattern');
 			}
 			else
 			{
@@ -352,5 +352,3 @@ class Route implements Base\Route
 		return $args;
 	}
 }
-
-?>
