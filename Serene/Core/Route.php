@@ -22,7 +22,7 @@ use Serene\Core\Base as Base;
 class Route implements Base\Route
 {
 	/**
-	 * Constants for the patterns, paths, routes.
+	 * Constants for the patterns, paths, defaults.
 	 */
 	const WILDCARD = '{*}';
 	const IGNORE = '{0}';
@@ -230,7 +230,7 @@ class Route implements Base\Route
 		else
 		{
 			$this->controllerPosition = -1;
-			return $this->config->router('defaultController');
+			return $this->config->router(self::DEFAULT_CONTROLLER);
 		}
 
 		$explicitController = $this->returnExplicitController($patternPart, $position);
@@ -241,15 +241,12 @@ class Route implements Base\Route
 		/*
 		 * Here, if the controller is not explcitly set by the pattern, but rather a {controller} is used, and the controller must be extracted from the URI
 		 */
-		if ($patternPart == self::CONTROLLER && $position <= count($uriParts) - 1)
+		if ($patternPart === self::CONTROLLER && $position <= count($uriParts) - 1)
 		{
 			$this->controllerPosition = $position;
 			return $uriParts[$position];
 		}
-		/*
-		 * Here, if {0} is used, skip to the next part of the string
-		 */
-		elseif ($patternPart == self::IGNORE)
+		elseif ($patternPart === self::IGNORE)
 		{
 			return $this->getController($URI, $position + 1);
 		}
@@ -258,7 +255,7 @@ class Route implements Base\Route
 		 * If nothing else matches, return the default controller
 		 */
 		$this->controllerPosition = -1;
-		return $this->config->router('defaultController');
+		return $this->config->router(self::DEFAULT_CONTROLLER);
 	}
 
 	/**
@@ -310,7 +307,7 @@ class Route implements Base\Route
 		else 
 		{
 			$this->methodPosition = -1;
-			return $this->config->router('defaultMethod');
+			return $this->config->router(self::DEFAULT_METHOD);
 		}
 
 		/*
@@ -352,7 +349,7 @@ class Route implements Base\Route
 		 * If nothing else matches, return the default method
 		 */
 		$this->methodPosition = -1;
-		return $this->config->router('defaultMethod');
+		return $this->config->router(self::DEFAULT_METHOD);
 	}
 
 	/**
