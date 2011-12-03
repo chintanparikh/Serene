@@ -29,7 +29,9 @@ class Route implements Base\Route
 	const CONTROLLER = '{controller}';
 	const METHOD = '{method}';
 	const ARGS = '{args}';
-	const SEPERATOR = '/';
+	const PATTERN_REGEX = '~\{[a-x0-9]+?\}~';
+	const DEFAULT_CONTROLLER = 'defaultController';
+	const DEFAULT_METHOD = 'defaultMethod';
 
 	/**
 	 * The path that the Route will apply for
@@ -184,7 +186,7 @@ class Route implements Base\Route
 
 	protected function returnExplicitController($patternPart, $position)
 	{
-		if (preg_match('~\{[a-x0-9]+?\}~', $patternPart) != 1)
+		if (preg_match(self::PATTERN_REGEX, $patternPart) != 1)
 		{
 			if ($this->controllerSegmentExistsInPath())
 			{
@@ -316,7 +318,7 @@ class Route implements Base\Route
 		 * Check if {method} also exists in $pathParts - if so, the Pattern has not been created properly
 		 * If not, return that string as the controller
 		 */
-		if (preg_match('~\{[a-x0-9]+?\}~', $patternPart) != 1)
+		if (preg_match(self::PATTERN_REGEX, $patternPart) != 1)
 		{
 			if (array_search(self::METHOD, $patternParts) != false)
 			{
@@ -341,7 +343,7 @@ class Route implements Base\Route
 		/*
 		 * Here, if {0} is used, skip to the next part of the string
 		 */
-		elseif ($patternPart == 'IGNORE')
+		elseif ($patternPart == self::IGNORE)
 		{
 			return $this->getMethod($URI, $position + 1);
 		}
@@ -398,7 +400,7 @@ class Route implements Base\Route
 			/*
 			 * If the $patternPart is not enclosed with {}, push it to the end of args[]
 			 */
-			if (preg_match('~\{[a-x0-9]+?\}~', $patternPart) != 1)
+			if (preg_match(self::PATTERN_REGEX, $patternPart) != 1)
 			{
 				$args[] = $patternPart;
 			}
