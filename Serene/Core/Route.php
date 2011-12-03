@@ -91,6 +91,7 @@ class Route implements Base\Route
 	/**
 	 * Render's the path so it can be properly searched.
 	 # Need to change it so that it doesn't modify the original paths, and instead compares case-insensitively.
+	 # Current forces the URI to be lower case in output
 	 *
 	 * @access protected
 	 * @param string $path
@@ -139,18 +140,14 @@ class Route implements Base\Route
 			$uriParts = explode('/', $URI, count($pathParts));
 		}
 		
-		/*
-		 * 
-		 */
 		if ($this->isPathTooLong($pathParts, $uriParts))
 		{
 			return false;
 		}
 
-		$element = -1;
+		$element = 0;
 		foreach ($pathParts as $pathPart)
 		{
-			$element++;
 			/*
 			 * If the segment = {*}, then we know the rest of the string matches, because {*} matches anything, and must come last
 			 */
@@ -161,13 +158,12 @@ class Route implements Base\Route
 			/*
 			 * If we are here, $pathPart is a string. Thus, if the string matches the corresponding $uriPart, then we move on the the next segment, otherwise return false 
 			 */
-			else
+			elseif ($pathPart != $uriParts[$element])
 			{
-				if ($pathPart != $uriParts[$element])
-				{
-					return false;
-				}
+				return false;
 			}
+
+			$element++;
 		}
 	}
 
