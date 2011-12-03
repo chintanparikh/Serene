@@ -2,7 +2,7 @@
 /**
  * Route Class - Creates Routes to be used by the Router
  *
- * Special values:
+ * Special values: (All these are changable via the constants defined below (WILDCARD, IGNORE, etc))
  *  {*} = Wildcard. Anything will match this. Used in Path. MUST be last in the Path
  *  {0} = Ignore. Used in Pattern. For example, new Route('Blog/A/B/C', '{0}/{controller}/{method}/{args}') would set the Controller to A, method to B and args to C. The 'Blog' would be ignored
  *  {controller} = Set the controller. Used in Pattern
@@ -21,6 +21,16 @@ use Serene\Core\Base as Base;
 
 class Route implements Base\Route
 {
+	/**
+	 * Constants for the patterns, paths, routes.
+	 */
+	const WILDCARD = '{*}';
+	const IGNORE = '{0}';
+	const CONTROLLER = '{controller}';
+	const METHOD = '{method}';
+	const ARGS = '{args}';
+	const SEPERATOR = '/';
+
 	/**
 	 * The path that the Route will apply for
 	 * Shouldn't start or end with a '/'
@@ -151,7 +161,7 @@ class Route implements Base\Route
 			/*
 			 * If the segment = {*}, then we know the rest of the string matches, because {*} matches anything, and must come last
 			 */
-			if ($pathPart == '{*}')
+			if ($pathPart == WILDCARD)
 			{
 				return true;
 			}
@@ -169,7 +179,24 @@ class Route implements Base\Route
 
 	protected function controllerSegmentExistsInPath()
 	{
-		return array_key_exists('{controller}', $this->patternParts);
+		return array_key_exists(CONTROLLER, $this->patternParts);
+	}
+
+	protected function returnExplicitController($patternPart, $position)
+	{
+		if (preg_match('~\{[a-x0-9]+?\}~', $patternPart) != 1)
+		{
+			if ($this->controllerSegmentExistsInPath())
+			{
+				throw new \Exception('Both a string and parameter controller have been set in the Pattern');
+				return false;
+			}
+			else
+			{
+				$this->controllerPosition = $position;
+				return $patternPart;
+			}
+		}
 	}
 
 	public function controller($URI)
@@ -204,27 +231,15 @@ class Route implements Base\Route
 			return $this->config->router('defaultController');
 		}
 
-		/*
-		 * If $pathPart is not enclosed in {} (i.e it is a string),
-		 * Check if {controller} also exists in $pathParts - if so, the Pattern has not been created properly
-		 * If not, return that string as the controller
-		 */
-		if (preg_match('~\{[a-x0-9]+?\}~', $patternPart) != 1)
+		$explicitController = $this->returnExplicitController($patternPart, $position);
+		if ($explicitController)
 		{
-			if ($this->controllerSegmentExistsInPath())
-			{
-				throw new \Exception('Both a string and parameter controller have been set in the Pattern');
-			}
-			else
-			{
-				$this->controllerPosition = $position;
-				return $patternPart;
-			}
+			return $explicitController;
 		}
 		/*
 		 * Here, if the controller is not explcitly set by the pattern, but rather a {controller} is used, and the controller must be extracted from the URI
 		 */
-		elseif ($patternPart == '{controller}' && $position <= count($uriParts) - 1)
+		if ($patternPart == CONTROLLER && $position <= count($uriParts) - 1)
 		{
 			$this->controllerPosition = $position;
 			return $uriParts[$position];
@@ -232,7 +247,7 @@ class Route implements Base\Route
 		/*
 		 * Here, if {0} is used, skip to the next part of the string
 		 */
-		elseif ($patternPart == '{0}')
+		elseif ($patternPart == IGNORE)
 		{
 			return $this->getController($URI, $position + 1);
 		}
@@ -303,7 +318,7 @@ class Route implements Base\Route
 		 */
 		if (preg_match('~\{[a-x0-9]+?\}~', $patternPart) != 1)
 		{
-			if (array_search('{method}', $patternParts) != false)
+			if (array_search(METHOD, $patternParts) != false)
 			{
 				throw new \Exception('Both a string and parameter method have been set in the Pattern');
 			}
@@ -317,7 +332,7 @@ class Route implements Base\Route
 		/*
 		 * Here, if the method is not explcitly set by the pattern, but rather a {method} is used, and the method must be extracted from the URI
 		 */
-		elseif ($patternPart == '{method}' && $position <= count($uriParts) - 1)
+		elseif ($patternPart == METHOD && $position <= count($uriParts) - 1)
 		{
 			$this->methodPosition = $position;
 			return $uriParts[$position];
@@ -326,7 +341,7 @@ class Route implements Base\Route
 		/*
 		 * Here, if {0} is used, skip to the next part of the string
 		 */
-		elseif ($patternPart == '{0}')
+		elseif ($patternPart == 'IGNORE')
 		{
 			return $this->getMethod($URI, $position + 1);
 		}
@@ -390,7 +405,7 @@ class Route implements Base\Route
 			/*
 			 * Otherwise, extract the args from uriParts
 			 */
-			elseif ($patternPart == '{args}')
+			elseif ($patternPart == ARGS)
 			{
 				$uriPosition = 0;
 				while ($patternPosition > $uriPosition)
