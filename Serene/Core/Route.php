@@ -28,6 +28,7 @@ class Route implements Base\Route
 	 * @var string
 	 */
 	public $path;
+	protected $pathParts;
 
 	/**
 	 * The routing pattern that determines the route
@@ -36,6 +37,7 @@ class Route implements Base\Route
 	 * @var string
 	 */
 	public $pattern;
+	protected $patternParts;
 
 	/**
 	 * Holds the Config instance
@@ -63,6 +65,8 @@ class Route implements Base\Route
 		$this->path = $this->renderPath($path);
 		$this->pattern = $this->renderPath($pattern);
 		$this->config = $this->getConfig($config);
+		$this->patternParts = explode('/', $this->pattern);
+		$this->pathParts = explode('/', $this->path);
 	}
 
 	/**
@@ -130,23 +134,19 @@ class Route implements Base\Route
 	public function matches($URI)
 	{
 		$URI = strtolower($URI);
-		/*
-		 * Create Arrays of both the Path and URI, for each segment.
-		 */
-		$pathParts = explode('/', $this->path);
 		$uriParts = array();
 		if (empty($URI))
 		{
-			$uriParts = explode('/', $URI, count($pathParts));
+			$uriParts = explode('/', $URI, count($this->pathParts));
 		}
 		
-		if ($this->isPathTooLong($pathParts, $uriParts))
+		if ($this->isPathTooLong($this->pathParts, $uriParts))
 		{
 			return false;
 		}
 
 		$element = 0;
-		foreach ($pathParts as $pathPart)
+		foreach ($this->pathParts as $pathPart)
 		{
 			/*
 			 * If the segment = {*}, then we know the rest of the string matches, because {*} matches anything, and must come last
@@ -167,6 +167,12 @@ class Route implements Base\Route
 		}
 	}
 
+	protected function controllerSegmentExistsInPath()
+	{
+		return array_key_exists('{controller}', $this->patternParts);
+	}
+
+	
 	/**
 	 * Determines the controller from the pattern stored in $this->path and the supplied URI
 	 *
@@ -177,17 +183,16 @@ class Route implements Base\Route
 	 */
 	public function getController($URI, $position = 0)
 	{
-		$patternParts = explode('/', $this->pattern);
 		$uriParts = explode('/', $URI);
 
 		/*
 		 * If the URI is empty (index), set it to an empty array instead of an array with [0] = ''
 		 */
-		$uriParts = ($uriParts[0] == '') ? array() : $uriParts;
+		$uriParts = (empty($uriParts[0])) ? array() : $uriParts;
 
-		if (isset($patternParts[$position]))
+		if (isset($this->patternParts[$position]))
 		{
-			$patternPart = $patternParts[$position];
+			$patternPart = $this->patternParts[$position];
 		}
 		else
 		{
@@ -202,7 +207,7 @@ class Route implements Base\Route
 		 */
 		if (preg_match('~\{[a-x0-9]+?\}~', $patternPart) != 1)
 		{
-			if (array_search('{controller}', $patternParts) != false)
+			if ($this->controllerSegmentExistsInPath())
 			{
 				throw new \Exception('Both a string and parameter controller have been set in the Pattern');
 			}
