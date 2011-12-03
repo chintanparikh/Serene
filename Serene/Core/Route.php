@@ -179,23 +179,35 @@ class Route implements Base\Route
 		}
 	}
 
-	protected function controllerSegmentExistsInPath()
+	protected function segmentExistsInPath($type)
 	{
-		return array_key_exists(self::CONTROLLER, $this->patternParts);
+		switch ($type)
+		{
+			case 'controller':
+				$key = self::CONTROLLER;
+				break;
+			case 'method':
+				$key = self::METHOD;
+				break;
+			default:
+				break;
+		}
+		return in_array($key, $this->patternParts);
 	}
 
-	protected function returnExplicitController($patternPart, $position)
+	protected function returnExplicit($type, $patternPart, $position)
 	{
 		if (preg_match(self::PATTERN_REGEX, $patternPart) != 1)
 		{
-			if ($this->controllerSegmentExistsInPath())
+			if ($this->segmentExistsInPath($type))
 			{
-				throw new \Exception('Both a string and parameter controller have been set in the Pattern');
+				throw new \Exception("Both a string and parameter {$type} have been set in the Pattern");
 				return false;
 			}
 			else
 			{
-				$this->controllerPosition = $position;
+				$typePosition = 'this->' . $type . 'Position';
+				$$typePosition = $position;
 				return $patternPart;
 			}
 		}
@@ -233,7 +245,7 @@ class Route implements Base\Route
 			return $this->config->router(self::DEFAULT_CONTROLLER);
 		}
 
-		$explicitController = $this->returnExplicitController($patternPart, $position);
+		$explicitController = $this->returnExplicit('controller', $patternPart, $position);
 		if ($explicitController)
 		{
 			return $explicitController;
@@ -273,6 +285,22 @@ class Route implements Base\Route
 	{
 		return $this->getMethod($URI);
 	}
+
+	protected function setMethodPosition($position, $controllerPosition)
+	{
+		/*
+		 * If the position given in the argument is less than the controller position, increment
+		 */
+		if ($position <= $controllerPosition)
+		{
+			$position++;
+			setMethodPosition($position, $controllerPosition);
+		}
+		else
+		{
+			return $position;
+		}
+	}
 	/**
 	 * Determines the method from the pattern stored in $this->path and the supplied URI
 	 *
@@ -283,26 +311,20 @@ class Route implements Base\Route
 	 */
 	protected function getMethod($URI, $position = 1)
 	{
-		$patternParts = explode('/', $this->pattern);
 		$uriParts = explode('/', $URI);
 		$controllerPosition = $this->getControllerPosition();
 
-		/*
-		 * If the position given in the argument is less than the controller position, set it to one more than the controllers position
-		 */
-		if ($position <= $controllerPosition)
-		{
-			$position++;
-		}
+		
+		$position = $this->setMethodPosition($position, $controllerPosition);
 
 		/*
 		 * If the URI is empty (index), set it to an empty array instead of an array with [0] = ''
 		 */
 		$uriParts = ($uriParts[0] == '') ? array() : $uriParts;
 
-		if (isset($patternParts[$position]))
+		if (isset($this->patternParts[$position]))
 		{
-			$patternPart = $patternParts[$position];
+			$patternPart = $this->patternParts[$position];
 		}
 		else 
 		{
@@ -310,36 +332,20 @@ class Route implements Base\Route
 			return $this->config->router(self::DEFAULT_METHOD);
 		}
 
-		/*
-		 * If $pathPart is not enclosed in {} (i.e it is a string),
-		 * Check if {method} also exists in $pathParts - if so, the Pattern has not been created properly
-		 * If not, return that string as the controller
-		 */
-		if (preg_match(self::PATTERN_REGEX, $patternPart) != 1)
+		$explicitMethod = $this->returnExplicit('method', $patternPart, $position);
+		if ($explicitMethod)
 		{
-			if (array_search(self::METHOD, $patternParts) != false)
-			{
-				throw new \Exception('Both a string and parameter method have been set in the Pattern');
-			}
-			else
-			{
-				$this->methodPosition = $position;
-				return $patternPart;
-			}
+			return $explicitMethod;
 		}
 
 		/*
 		 * Here, if the method is not explcitly set by the pattern, but rather a {method} is used, and the method must be extracted from the URI
 		 */
-		elseif ($patternPart == self::METHOD && $position <= count($uriParts) - 1)
+		if ($patternPart == self::METHOD && $position <= count($uriParts) - 1)
 		{
 			$this->methodPosition = $position;
 			return $uriParts[$position];
 		}
-
-		/*
-		 * Here, if {0} is used, skip to the next part of the string
-		 */
 		elseif ($patternPart == self::IGNORE)
 		{
 			return $this->getMethod($URI, $position + 1);
