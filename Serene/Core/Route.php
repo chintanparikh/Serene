@@ -23,6 +23,7 @@ class Route implements Base\Route
 {
 	/**
 	 * The path that the Route will apply for
+	 * Shouldn't start or end with a '/'
 	 *
 	 * @var string
 	 */
@@ -30,6 +31,7 @@ class Route implements Base\Route
 
 	/**
 	 * The routing pattern that determines the route
+	 * Shouldn't start or end with a '/'
 	 *
 	 * @var string
 	 */
@@ -63,6 +65,13 @@ class Route implements Base\Route
 		$this->config = $this->getConfig($config);
 	}
 
+	/**
+	 * Ensures we have a Config instance, and supplies it to the class
+	 *
+	 * @access protected
+	 * @param null|Config $config
+	 * @return Config
+	 */
 	protected function getConfig($config)
 	{
 		if ($config == NULL)
