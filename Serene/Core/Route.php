@@ -107,6 +107,19 @@ class Route implements Base\Route
 	}
 
 	/**
+	 * If the path is more specific than the URI, it can't match the URI.
+	 *
+	 * @access protected
+	 * @param array $pathParts
+	 * @param array $uriParts
+	 * @return bool
+	 */
+	protected function isPathTooLong($pathParts, $uriParts)
+	{
+		return count($pathParts) - 1 > count($uriParts);
+	}
+
+	/**
 	 * Determines whether the path stored in $this->path matches the supplied URI
 	 *
 	 * @access public
@@ -120,18 +133,16 @@ class Route implements Base\Route
 		 * Create Arrays of both the Path and URI, for each segment.
 		 */
 		$pathParts = explode('/', $this->path);
-		$uriParts = array('');
+		$uriParts = array();
 		if (empty($URI))
 		{
 			$uriParts = explode('/', $URI, count($pathParts));
 		}
 		
 		/*
-		 * If the condition is true, then the path cannot match the URI, because there are more segments to the path than the URI. For example, $path = blog/view/{*}; $URI = blog
-		 * In other worse, the path is more specific than the URI.
-		 * It is count() - 1 to take into account the possibility of {*}
+		 * 
 		 */
-		if (count($pathParts) - 1 > count($uriParts))
+		if ($this->isPathTooLong($pathParts, $uriParts))
 		{
 			return false;
 		}
