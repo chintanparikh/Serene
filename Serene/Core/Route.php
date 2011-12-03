@@ -60,8 +60,8 @@ class Route implements Base\Route
 
 	public function __construct($path, $pattern, $config = NULL)
 	{
-		$this->path = strtolower($path);
-		$this->pattern = strtolower($pattern);
+		$this->path = $this->renderPath($path);
+		$this->pattern = $this->renderPath($pattern);
 		$this->config = $this->getConfig($config);
 	}
 
@@ -86,6 +86,19 @@ class Route implements Base\Route
 		{
 			throw new \Exception("Config not supplied correct in Route.php");
 		}
+	}
+	
+	/**
+	 * Render's the path so it can be properly searched.
+	 # Need to change it so that it doesn't modify the original paths, and instead compares case-insensitively.
+	 *
+	 * @access protected
+	 * @param string $path
+	 * @return string
+	 */
+	protected function renderPath($path)
+	{
+		return strtolower($path);
 	}
 
 	protected function validate()
