@@ -7,9 +7,9 @@ interface Route
 {
 	public function matches($URI);
 
-	public function getController($URI, $position);
+	public function controller($URI);
 
-	public function getMethod($URI, $position);
+	public function method($URI);
 
-	public function getArgs($URI);
+	public function args($URI);
 }

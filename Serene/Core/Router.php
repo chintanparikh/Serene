@@ -111,9 +111,9 @@ class Router
 			// If our route's path matches our URI
 			if ($route->matches($this->URI))
 			{
-				return array('controller' => $route->getController($this->URI),
-							 'method' => $route->getMethod($this->URI),
-							 'args' => $route->getArgs($this->URI)
+				return array('controller' => $route->controller($this->URI),
+							 'method' => $route->method($this->URI),
+							 'args' => $route->args($this->URI)
 							 );
 			}
 		}

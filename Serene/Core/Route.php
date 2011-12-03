@@ -172,16 +172,20 @@ class Route implements Base\Route
 		return array_key_exists('{controller}', $this->patternParts);
 	}
 
-	
+	public function controller($URI)
+	{
+		return $this->getController($URI);
+	}
+
 	/**
 	 * Determines the controller from the pattern stored in $this->path and the supplied URI
 	 *
-	 * @access public
+	 * @access protected
 	 * @param string $URI
-	 * @param int $position This should never be set when getController() is called, it is simply there so that recursion works
+	 * @param int $position Allows recursion
 	 * @return string
 	 */
-	public function getController($URI, $position = 0)
+	protected function getController($URI, $position = 0)
 	{
 		$uriParts = explode('/', $URI);
 
@@ -251,15 +255,19 @@ class Route implements Base\Route
 		return $this->controllerPosition;
 	}
 
+	public function method($URI)
+	{
+		return $this->getMethod($URI);
+	}
 	/**
 	 * Determines the method from the pattern stored in $this->path and the supplied URI
 	 *
 	 * @access public
 	 * @param string $URI
-	 * @param int $position This should never be set when getController() is called, it is simply there so that recursion works
+	 * @param int $position Allows recursion
 	 * @return string
 	 */
-	public function getMethod($URI, $position = 1)
+	protected function getMethod($URI, $position = 1)
 	{
 		$patternParts = explode('/', $this->pattern);
 		$uriParts = explode('/', $URI);
@@ -348,7 +356,7 @@ class Route implements Base\Route
 	 * @param string $URI
 	 * @return array
 	 */
-	public function getArgs($URI)
+	public function args($URI)
 	{
 		$patternParts = explode('/', $this->pattern);
 		$uriParts = explode('/', $URI);
