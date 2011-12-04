@@ -190,6 +190,7 @@ class Route implements Base\Route
 				$key = self::METHOD;
 				break;
 			default:
+				throw new Exception('Incorrect value for $type in Route::segmentExistsInPath(). Must be either "controller" or "method"');
 				break;
 		}
 		return in_array($key, $this->patternParts);
@@ -374,11 +375,10 @@ class Route implements Base\Route
 	 *
 	 * @access public
 	 * @param string $URI
-	 * @return array
+	 * @return array An ordered list containing all the arguments to pass to the dispatcher
 	 */
 	public function args($URI)
 	{
-		$patternParts = explode('/', $this->pattern);
 		$uriParts = explode('/', $URI);
 		$methodPosition = $this->getMethodPosition();
 
@@ -388,17 +388,20 @@ class Route implements Base\Route
 		$element = 0;
 		while ($methodPosition >= $element)
 		{
-			array_shift($patternParts);
+			array_shift($this->patternParts);
 			array_shift($uriParts);
 			$element++;
 		}
 		
-		/*
-		 * Build the args array
-		 */
+		return $this->buildArgsArray($uriParts);
+		
+	}
+
+	protected function buildArgsArray($uriParts)
+	{
 		$args = array();
 		$patternPosition = 0;
-		foreach ($patternParts as $patternPart)
+		foreach ($this->patternParts as $patternPart)
 		{
 			/*
 			 * If the $patternPart is not enclosed with {}, push it to the end of args[]
@@ -426,7 +429,7 @@ class Route implements Base\Route
 			$patternPosition++;
 		}
 
-
 		return $args;
+		
 	}
 }
