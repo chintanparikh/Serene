@@ -383,45 +383,30 @@ class Route implements Base\Route
 		$methodPosition = $this->getMethodPosition();
 
 		/*
-		 * Remove elements off the front? of $patternParts and $uriParts until both the controller and method elements are removed, leaving us with only the arguments
+		 * Only take the parts of both patternParts and uriParts that correspond to arguments
 		 */
-		$element = 0;
-		while ($methodPosition >= $element)
-		{
-			array_shift($this->patternParts);
-			array_shift($uriParts);
-			$element++;
-		}
-		
-		return $this->buildArgsArray($uriParts);
-		
+		 $patternParts = array_slice($this->patternParts, $methodPosition);
+		 $uriParts = array_slice($uriParts, $methodPosition);
+				
+		return $this->buildArgsArray($patternParts, $uriParts);		
 	}
 
-	protected function buildArgsArray($uriParts)
+	protected function buildArgsArray($patternParts, $uriParts)
 	{
 		$args = array();
 		$patternPosition = 0;
-		foreach ($this->patternParts as $patternPart)
+		foreach ($patternParts as $patternPart)
 		{
 			/*
-			 * If the $patternPart is not enclosed with {}, push it to the end of args[]
+			 * If the $patternPart is not enclosed with {}, push it to the end of args[] otherwise, extract the args from uriParts
 			 */
 			if (preg_match(self::PATTERN_REGEX, $patternPart) != 1)
 			{
 				$args[] = $patternPart;
 			}
-			/*
-			 * Otherwise, extract the args from uriParts
-			 */
 			elseif ($patternPart == self::ARGS)
 			{
-				$uriPosition = 0;
-				while ($patternPosition > $uriPosition)
-				{
-					array_shift($uriParts);
-					$uriPosition++;
-				}
-				foreach ($uriParts as $uriPart)
+				foreach (array_slice($uriParts, $patternPosition) as $uriPart)
 				{
 					$args[] = $uriPart;
 				}
