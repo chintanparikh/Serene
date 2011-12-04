@@ -83,6 +83,7 @@ class Route implements Base\Route
 		$this->config = $this->getConfig($config);
 		$this->patternParts = explode('/', $this->pattern);
 		$this->pathParts = explode('/', $this->path);
+		$this->validate();
 	}
 
 	/**
@@ -109,7 +110,7 @@ class Route implements Base\Route
 	}
 	
 	/**
-	 * Render's the path so it can be properly searched.
+	 * Renders the path so it can be properly searched.
 	 # Need to change it so that it doesn't modify the original paths, and instead compares case-insensitively.
 	 # Current forces the URI to be lower case in output
 	 *
@@ -122,10 +123,12 @@ class Route implements Base\Route
 		return strtolower($path);
 	}
 
+	/**
+	 * Validates the route
+	 # Need to delegate all validation into here, instead of being distributed through get*
+	 */
 	protected function validate()
-	{
-		
-	}
+	{	}
 
 	/**
 	 * If the path is more specific than the URI, it can't match the URI.
@@ -180,6 +183,13 @@ class Route implements Base\Route
 		}
 	}
 
+	/**
+	 * Determines whether {controller}, {method}, etc exists in $this->patternParts
+	 *
+	 * @access protected
+	 * @param string $type Either 'controller' or 'method'
+	 * @return bool
+	 */
 	protected function segmentExistsInPath($type)
 	{
 		switch ($type)
@@ -197,6 +207,15 @@ class Route implements Base\Route
 		return in_array($key, $this->patternParts);
 	}
 
+	/**
+	 * Determines (and returns) if an explicit (string) controller has been set in the Pattern
+	 *
+	 * @access protected
+	 * @param string $type Either 'controller' or 'method'
+	 * @param string $patternPart
+	 * @param int $position
+	 * @return bool|string
+	 */
 	protected function returnExplicit($type, $patternPart, $position)
 	{
 		if (preg_match(self::PATTERN_REGEX, $patternPart) != 1)
@@ -215,6 +234,13 @@ class Route implements Base\Route
 		}
 	}
 
+	/**
+	 * Public frontend(?) to getController. Used so there's no chance of $position being set when getController() is called
+	 *
+	 * @access public
+	 * @param string $URI
+	 * @return function
+	 */
 	public function controller($URI)
 	{
 		return $this->getController($URI);
@@ -283,26 +309,18 @@ class Route implements Base\Route
 		return $this->controllerPosition;
 	}
 
+	/**
+	 * Public frontend(?) to getMethod. Used so there's no chance of $position being set when getMethod() is called
+	 *
+	 * @access public
+	 * @param string $URI
+	 * @return function
+	 */
 	public function method($URI)
 	{
 		return $this->getMethod($URI);
 	}
 
-	protected function setMethodPosition($position, $controllerPosition)
-	{
-		/*
-		 * If the position given in the argument is less than the controller position, increment
-		 */
-		if ($position <= $controllerPosition)
-		{
-			$position++;
-			setMethodPosition($position, $controllerPosition);
-		}
-		else
-		{
-			return $position;
-		}
-	}
 	/**
 	 * Determines the method from the pattern stored in $this->path and the supplied URI
 	 *
@@ -341,7 +359,7 @@ class Route implements Base\Route
 		}
 
 		/*
-		 * Here, if the method is not explcitly set by the pattern, but rather a {method} is used, and the method must be extracted from the URI
+		 * Here, if the method is not explcitly set by the pattern, but rather a {method} is used, the method must be extracted from the URI
 		 */
 		if ($patternPart == self::METHOD && $position <= count($uriParts) - 1)
 		{
@@ -358,6 +376,30 @@ class Route implements Base\Route
 		 */
 		$this->methodPosition = -1;
 		return $this->config->router(self::DEFAULT_METHOD);
+	}
+
+	/**
+	 * Sets the method position to one more than the $controllerPosition
+	 *
+	 * @access protected
+	 * @param int $position
+	 * @param int $controllerPosition
+	 * @return int
+	 */
+	protected function setMethodPosition($position, $controllerPosition)
+	{
+		/*
+		 * If the position given in the argument is less than the controller position, increment
+		 */
+		if ($position <= $controllerPosition)
+		{
+			$position++;
+			setMethodPosition($position, $controllerPosition);
+		}
+		else
+		{
+			return $position;
+		}
 	}
 
 	/**
@@ -392,6 +434,14 @@ class Route implements Base\Route
 		return $this->buildArgsArray($patternParts, $uriParts);		
 	}
 
+	/**
+	 * Builds the arguments array from inputs
+	 *
+	 * @access protected
+	 * @param array $patternParts
+	 * @param array $uriParts
+	 * @return array An ordered list containing all the arguments to pass to the dispatcher
+	 */
 	protected function buildArgsArray($patternParts, $uriParts)
 	{
 		$args = array();
@@ -410,7 +460,6 @@ class Route implements Base\Route
 			}
 		}
 
-		return $args;
-		
+		return $args;		
 	}
 }
