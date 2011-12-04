@@ -13,6 +13,10 @@
  * Some examples:
  *  new Route('blog/{*}', 'blog_controller/{method}/{args}');
  *  new Route('someString/aController/{*}', '{0}/{controller}/{method}/{args}');
+ *
+ # What needs to be done:
+ #  Need to delegate all valdation of the Route into validate()
+ *
  */
 
 namespace Serene\Core;
@@ -157,8 +161,7 @@ class Route implements Base\Route
 			return false;
 		}
 
-		$element = 0;
-		foreach ($this->pathParts as $pathPart)
+		foreach ($this->pathParts as $element=>$pathPart)
 		{
 			/*
 			 * If the segment = {*}, then we know the rest of the string matches, because {*} matches anything, and must come last
@@ -174,8 +177,6 @@ class Route implements Base\Route
 			{
 				return false;
 			}
-
-			$element++;
 		}
 	}
 
@@ -394,8 +395,7 @@ class Route implements Base\Route
 	protected function buildArgsArray($patternParts, $uriParts)
 	{
 		$args = array();
-		$patternPosition = 0;
-		foreach ($patternParts as $patternPart)
+		foreach ($patternParts as $element=>$patternPart)
 		{
 			/*
 			 * If the $patternPart is not enclosed with {}, push it to the end of args[] otherwise, extract the args from uriParts
@@ -406,12 +406,8 @@ class Route implements Base\Route
 			}
 			elseif ($patternPart == self::ARGS)
 			{
-				foreach (array_slice($uriParts, $patternPosition) as $uriPart)
-				{
-					$args[] = $uriPart;
-				}
+				$args = array_merge($args, array_slice($uriParts, $element));
 			}
-			$patternPosition++;
 		}
 
 		return $args;
