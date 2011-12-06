@@ -152,7 +152,7 @@ class Route implements Base\Route
 	 */
 	public function matches($URI)
 	{
-		$URI = strtolower($URI);
+		$URI = $this->renderPath($URI);
 		$uriParts = array();
 		if (empty($URI))
 		{
@@ -173,9 +173,6 @@ class Route implements Base\Route
 			{
 				return true;
 			}
-			/*
-			 * If we are here, $pathPart is a string. Thus, if the string matches the corresponding $uriPart, then we move on the the next segment, otherwise return false 
-			 */
 			elseif ($pathPart != $uriParts[$element])
 			{
 				return false;

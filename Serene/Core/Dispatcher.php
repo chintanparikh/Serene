@@ -31,7 +31,7 @@ class Dispatcher
 	{
 		if (method_exists($this->controllerInstance, $method))
 		{
-			call_user_func_array( array($this->controllerInstance, $method), $args );
+			call_user_func_array(array($this->controllerInstance, $method), $args);
 		}
 		else
 		{
