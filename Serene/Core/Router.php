@@ -1,11 +1,9 @@
 <?php 
-/**
-* 
-*/
 
 namespace Serene\Core;
 
 use Serene\Core\Base as Base;
+
 
 class Router
 {
@@ -58,7 +56,7 @@ class Router
 	 * @access protected
 	 * @param string $requestURI Provided URI
 	 * @return string The URI to use for this instance 
-	 */
+	 */ 
 	public function getURI($requestURI)
 	{
 		if ($requestURI == '')
@@ -105,6 +103,7 @@ class Router
 	public function getRoute()
 	{
 		// Add the default Routing pattern, in case no routes are defined
+		// {*} matches all URIs
 		$this->add(new Route('{*}', $this->config->router('defaultRoutingPattern')));
 		foreach ($this->routes as $route)
 		{

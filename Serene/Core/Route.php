@@ -28,14 +28,14 @@ class Route implements Base\Route
 	/**
 	 * Constants for the patterns, paths, defaults.
 	 */
-	const WILDCARD = '{*}';
-	const IGNORE = '{0}';
-	const CONTROLLER = '{controller}';
-	const METHOD = '{method}';
-	const ARGS = '{args}';
-	const PATTERN_REGEX = '~\{[a-x0-9]+?\}~';
+	const WILDCARD           = '{*}';
+	const IGNORE             = '{0}';
+	const CONTROLLER         = '{controller}';
+	const METHOD             = '{method}';
+	const ARGS               = '{args}';
+	const PATTERN_REGEX      = '~\{[a-x0-9]+?\}~';
 	const DEFAULT_CONTROLLER = 'defaultController';
-	const DEFAULT_METHOD = 'defaultMethod';
+	const DEFAULT_METHOD     = 'defaultMethod';
 
 	/**
 	 * The path that the Route will apply for
