@@ -139,7 +139,7 @@ class Database
      */    
     function connect()
     {
-        $this->connection = new PDO($this->dsn, $this->username, $this->password);
+        $this->connection = new \PDO($this->dsn, $this->username, $this->password);
         return $this;
     }
 
