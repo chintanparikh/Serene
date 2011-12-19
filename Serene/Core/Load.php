@@ -7,7 +7,8 @@
  * @author timtamboy63 (timtamboy63@gmail.com)
  * @license Creative Commons
  *
- * Changelog:
+ * Todo:
+ # Throw exceptions in the Load class instead of the Dispatcher
  *
  */
 
