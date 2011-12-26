@@ -116,7 +116,17 @@ class Config
 	}
 
 	private function _loadINIConfig($path)
-	{}
+	{
+		if (file_exists($path))
+		{
+			$config = parse_ini_file($path, true);
+		}
+		else
+		{
+			throw new \Exception("Config file {$path} does not exist!"); 
+		}
+		return $config;
+	}
 
 	private function _loadXMLConfig($path)
 	{}
