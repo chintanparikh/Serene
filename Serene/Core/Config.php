@@ -129,7 +129,30 @@ class Config
 	}
 
 	private function _loadXMLConfig($path)
-	{}
+	{
+		if (file_exists($path))
+		{
+			$raw = file_get_contents($path);
+			$xml = new SimpleXMLElement($raw);
+
+			$vars = get_object_vars($xml);
+			foreach ($vars as $key=>$value)
+			{
+				$name = $key;
+			}
+
+			unset($xml->$name->comment);
+			$config[$name] = get_object_vars($xml->$name);
+		}
+		else
+		{
+			throw new \Exception("Config file {$path} does not exist!"); 
+		}
+		
+		return $config;
+		
+
+	}
 
 	private function _loadJSONConfig($path)
 	{}
