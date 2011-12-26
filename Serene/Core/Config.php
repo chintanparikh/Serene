@@ -140,7 +140,8 @@ class Config
 			{
 				$name = $key;
 			}
-
+			
+			// Remove the comments field (uncessary, and we don't need it))
 			unset($xml->$name->comment);
 			$config[$name] = get_object_vars($xml->$name);
 		}
@@ -148,14 +149,24 @@ class Config
 		{
 			throw new \Exception("Config file {$path} does not exist!"); 
 		}
-		
-		return $config;
-		
 
+		return $config;
 	}
 
 	private function _loadJSONConfig($path)
-	{}
+	{
+		if (file_exists($path))
+		{
+			$raw = file_get_contents($path);
+			$config = json_decode($file, true);
+		}
+		else
+		{
+			throw new \Exception("Config file {$path} does not exist!"); 
+		}
+
+		return $config;
+	}
 	
 }
 
