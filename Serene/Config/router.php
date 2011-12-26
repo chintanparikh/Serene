@@ -13,7 +13,7 @@ $config['router']['defaultMethod'] = 'index';
 */
 $config['router']['defaultRoutingPattern'] = '{controller}/{method}/{args}';
 /**
-* The directly your index.php is stored in. Must NOT be followed by a '/'
+* The directory your index.php is stored in. Must NOT be followed by a '/'
 */
 $config['router']['path'] = 'Serene';
 

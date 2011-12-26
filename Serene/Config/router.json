@@ -1,0 +1,12 @@
+{
+  "config": 
+  {
+    "router": 
+    {
+      "defaultController": "controller",
+      "defaultMethod": "index",
+      "defaultRoutingPattern": "{controller}/{method}/{args}",
+      "path": "Serene"
+    }
+  }
+}

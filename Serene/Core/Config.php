@@ -15,6 +15,10 @@ namespace Serene\Core;
 class Config
 {
 	/**
+	 * Can be 'php', 'ini', 'json' or 'xml'
+	 */
+	const TYPE = 'PHP';
+	/**
      * Holds the Config instance
      *
      * @var Config
@@ -85,25 +89,40 @@ class Config
      * @param string $filename The name of the configuration file located in  $this->pathToConfig
      * @return array
      */
-	private function _loadConfig($filename)
+	protected function _loadConfig($filename)
 	{	
 		if (!isset($config[$filename]))
 		{
-			$path = $this->pathToConfig . $filename . '.php';
-			if (file_exists($path))
-			{
-				require($this->pathToConfig . $filename . '.php');
-			}
-			else
-			{
-				throw new \Exception("Config file {$path} does not exist!");
-			}
+			$path = $this->pathToConfig . $filename . '.' . self::TYPE;
+			$function = '_load' . self::TYPE . 'Config';
+			return $this->$function($path);
+		}
+	}
+
+	private function _loadPHPConfig($path)
+	{
+		if (file_exists($path))
+		{
+			require($path);
+		}
+		else
+		{
+			throw new \Exception("Config file {$path} does not exist!");
 		}
 		/*
-		 * $config is the array found in ALL config files stored in $this->pathToConfig/
+		 * $config is the array found in ALL PHP  config files stored in $this->pathToConfig/
 		 */
 		return $config;
 	}
+
+	private function _loadINIConfig($path)
+	{}
+
+	private function _loadXMLConfig($path)
+	{}
+
+	private function _loadJSONConfig($path)
+	{}
 	
 }
 

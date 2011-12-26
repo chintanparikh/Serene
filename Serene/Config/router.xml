@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<router>
+		<!-- The default controller to call on the index -->
+		<defaultController>controller</defaultController>
+
+		<!-- The default method to call when no method is specified -->
+		<defaultMethod>index</defaultMethod>
+
+		<!-- The default routing pattern -->
+		<defaultRoutingPattern>{controller}/{method}/{args}</defaultRoutingPattern>
+		
+		<!-- The directory your index.php is stored in. Must NOT be followed by a '/' -->
+		<path>Serene</path>
+	</router>
+</config>
