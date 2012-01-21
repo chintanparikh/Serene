@@ -13,24 +13,12 @@ class Application
 
 	public function __construct()
 	{
-		/**
-		* Require the base templates for the controllers, etc
-		**/
-		require_once('Core/Base/Controller.php');
-		require_once('Core/Base/Model.php');
-		require_once('Core/Base/Route.php');
-		/**
-		* Require all the core files for the framework
-		**/
-		require_once('Core/Config.php');
-		require_once('Core/Load.php');
-		require_once('Core/Router.php');
-		require_once('Core/Route.php');
-		require_once('Core/Dispatcher.php');
+		require_once('Core/Autoload.php');
 	}
 
 	public function start()
 	{
+		spl_autoload_register('Serene\Core\Autoload::autoload');
 		$this->config = Core\Config::getInstance();
 		$this->load = new Core\Load($this->config);
 		$this->router = new Core\Router($this->config);
