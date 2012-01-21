@@ -2,7 +2,7 @@
 /**
 * 
 */
-namespace Serene\Model;
+namespace Serene\Models;
 use Serene\Core\Base as Base;
 use Serene\Core\Libraries as Library;
 

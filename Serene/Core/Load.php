@@ -57,7 +57,7 @@ class Load
 	public function model($filename)
 	{
 		require_once $this->config->load('modelPath') . '/' . $filename . '.php';
-		$model = '\\Serene\\Model\\' . $filename; 
+		$model = '\\Serene\\Models\\' . $filename; 
 		return new $model;
 	}
 
