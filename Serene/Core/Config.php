@@ -14,10 +14,13 @@ namespace Serene\Core;
 
 class Config
 {
+	const DEFAULT_TYPE = 'php';
 	/**
-	 * Can be 'php', 'ini', 'json' or 'xml'
+	 * Acceptable types of config files.
+	 * 
+	 * @var array
 	 */
-	const TYPE = 'PHP';
+	protected $types = array('php', 'ini', 'json', 'xml');
 	/**
      * Holds the Config instance
      *
@@ -55,16 +58,29 @@ class Config
 
 	/**
      * Allows the function name to be used as a string to load the config file.
-     * Lets us do something like $config->database('host'); This would load the file $this->pathToConfig/database.php, and return $config['database']['host'];
+     * Lets us do something like $config->database('host', 'xml'); This would load the file $this->pathToConfig/database.xml, and return $config['database']['host'];
      *
      * @access public
      * @param string $configFile The name of the configuration file located in  $this->pathToConfig
-     * @param string $property
+     * @param array $property [$configFile, ($type)]. If $type is not set, it is set to 'php' by default
      * @return string
      */
 	public function __call($configFile, $property)
 	{
-		$config = $this->_loadConfig($configFile);
+		// default type is a magic constant
+		$type = self::DEFAULT_TYPE;
+		// overrides default if the type is set in the class (eg $config->database('host', 'xml');
+		if (array_key_exists(1, $property))
+		{
+			$type = $property[1];
+			if (!in_array($property[2], $this->types))
+			{
+				throw new \Exception('Type of config file not available');
+				$type = DEFAULT_TYPE;	
+			}
+		}
+
+		$config = $this->_loadConfig($configFile, $type);
 		if (array_key_exists(0, $property))
 		{
 			if (is_array($config[$configFile]))
@@ -87,14 +103,15 @@ class Config
      *
      * @access private
      * @param string $filename The name of the configuration file located in  $this->pathToConfig
+     * @param string $type The type of file we are using
      * @return array
      */
-	protected function _loadConfig($filename)
+	protected function _loadConfig($filename, $type)
 	{	
 		if (!isset($config[$filename]))
 		{
-			$path = $this->pathToConfig . $filename . '.' . self::TYPE;
-			$function = '_load' . self::TYPE . 'Config';
+			$path = $this->pathToConfig . $filename . '.' . $type;
+			$function = '_load' . $type . 'Config';
 			return $this->$function($path);
 		}
 	}
