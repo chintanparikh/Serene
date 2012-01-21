@@ -36,7 +36,14 @@ class Config
 	protected $pathToConfig;
 
 	/**
-     * Gets the current instance of the class, or initiates the class of no Instance is present (Singleton Design Pattern)
+	 * Holds the cache of all config values accessed
+	 * 
+	 * @var array
+	 */
+	protected $configCache;
+
+	/**
+     * Gets the current instance of the class, or initiates the class if no Instance is present (Singleton Design Pattern)
      *
      * @access public
      * @return Config
@@ -80,17 +87,28 @@ class Config
 			}
 		}
 
-		$config = $this->_loadConfig($configFile, $type);
+		
+		
 		if (array_key_exists(0, $property))
 		{
-			if (is_array($config[$configFile]))
+			if (!$this->_inCache($configFile, $property[0]))
 			{
-				return $config[$configFile][$property[0]];
+				$config = $this->_loadConfig($configFile, $type);
+				$this->_addToCache($config);
+				if (is_array($config[$configFile]))
+				{
+					return $config[$configFile][$property[0]];
+				}
+				else
+				{
+					throw new \Exception('Config file is not formatted properly');
+				}	
 			}
 			else
 			{
-				throw new \Exception('Config file is not formatted properly');
+				return $this->_readCache($configFile, $property[0]);
 			}
+			
 		}
 		else
 		{
@@ -101,7 +119,7 @@ class Config
 	/**
      * Loads a config file (We can't use the Load Object because Config is always instantiated first, Load depends on Config)
      *
-     * @access private
+     * @access protected
      * @param string $filename The name of the configuration file located in  $this->pathToConfig
      * @param string $type The type of file we are using
      * @return array
@@ -114,6 +132,49 @@ class Config
 			$function = '_load' . $type . 'Config';
 			return $this->$function($path);
 		}
+	}
+
+	/**
+	 * Adds to the cache
+	 * 
+	 * @access protected
+	 * @param array $config The configuration to be merged with the existing cache
+	 * @return null
+	 */
+	protected function _addToCache($config)
+	{
+		// typecasted $this->configCache as array because it isn't an array when the cache is empty
+		$this->configCache = array_merge((array)$this->configCache, $config);
+	}
+
+	/**
+	 * Checks whether a property is in the cache
+	 * 
+	 * @access protected
+	 * @param string $configFile The filename of the file where the property is stored in
+	 * @param string $property The name of the property to be checked
+	 * @return bool
+	 */
+	protected function _inCache($configFile, $property)
+	{
+		if (isset($this->configCache[$configFile][$property]))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Returns a property from the cache
+	 * 
+	 * @access protected
+	 * @param string $configFile The filename of the file where the property is stored in
+	 * @param string $property The name of the property to be accessed
+	 * @return mixed
+	 */
+	protected function _readCache($configFile, $property)
+	{
+		return $this->configCache[$configFile][$property];
 	}
 
 	private function _loadPHPConfig($path)
