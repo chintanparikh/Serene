@@ -73,7 +73,7 @@ class Config
 		if (array_key_exists(1, $property))
 		{
 			$type = $property[1];
-			if (!in_array($property[2], $this->types))
+			if (!in_array($property[1], $this->types))
 			{
 				throw new \Exception('Type of config file not available');
 				$type = DEFAULT_TYPE;	
