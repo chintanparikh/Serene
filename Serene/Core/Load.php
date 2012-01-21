@@ -39,7 +39,6 @@ class Load
 	{
 		if (file_exists( $this->config->load('controllerPath') . '/' . $filename . '.php' ))
 		{
-			require_once $this->config->load('controllerPath') . '/' . $filename . '.php';
 			$class = '\\Serene\\Controllers\\' . $filename;
 			return new $class($this, $this->config);
 		}
@@ -56,7 +55,6 @@ class Load
      */
 	public function model($filename)
 	{
-		require_once $this->config->load('modelPath') . '/' . $filename . '.php';
 		$model = '\\Serene\\Models\\' . $filename; 
 		return new $model;
 	}
