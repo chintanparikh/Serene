@@ -7,15 +7,10 @@ class INI extends Base\ConfigParser
 {
 	public function parse($path)
 	{
-		if (file_exists($path))
-		{
-			$config = parse_ini_file($path, true);
-		}
-		else
-		{
-			throw new \Exception("Config file {$path} does not exist!"); 
-		}
+		$this->validatePath($path);
+
+		$config = parse_ini_file($path, true);
+
 		return $config;
-		
 	}
 }

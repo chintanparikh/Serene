@@ -7,15 +7,10 @@ class XML extends Base\ConfigParser
 {
 	public function parse($path)
 	{
-		if (file_exists($path))
-		{
-			$raw = file_get_contents($path);
-			$config = json_decode($raw, true);
-		}
-		else
-		{
-			throw new \Exception("Config file {$path} does not exist!"); 
-		}
+		$this->validatePath($path);
+
+		$raw = file_get_contents($path);
+		$config = json_decode($raw, true);
 
 		return $config;
 		

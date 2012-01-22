@@ -7,15 +7,10 @@ class PHP extends Base\ConfigParser
 {
 	public function parse($path)
 	{
-		$config = false;
-		if (file_exists($path))
-		{
-			require($path);
-		}
-		else
-		{
-			throw new \Exception("Config file {$path} does not exist!");
-		}
+		$this->validatePath($path);
+
+		$config = array();
+
 		/*
 		 * $config is the array found in ALL PHP  config files stored in $this->pathToConfig/
 		 */
