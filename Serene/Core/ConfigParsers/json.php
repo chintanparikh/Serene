@@ -10,7 +10,7 @@ class XML extends Base\ConfigParser
 		if (file_exists($path))
 		{
 			$raw = file_get_contents($path);
-			$config = json_decode($file, true);
+			$config = json_decode($raw, true);
 		}
 		else
 		{
