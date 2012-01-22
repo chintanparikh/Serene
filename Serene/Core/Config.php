@@ -15,6 +15,7 @@ namespace Serene\Core;
 class Config
 {
 	const DEFAULT_TYPE = 'php';
+	const PARSER_NAMESPACE = 'Serene\\Core\\ConfigParsers\\';
 	/**
 	 * Acceptable types of config files.
 	 * 
@@ -129,7 +130,7 @@ class Config
 		if (!isset($config[$filename]))
 		{
 			$path = $this->pathToConfig . $filename . '.' . $type;
-			$class = "Serene\\Core\\ConfigParsers\\{$type}";
+			$class = self::PARSER_NAMESPACE . $type;
 			if (class_exists($class) && is_subclass_of($class, 'Serene\\Core\\Base\\ConfigParser'))
 			{
 				$parser = new $class;
