@@ -7,9 +7,12 @@ class PHP extends Base\ConfigParser
 {
 	public function parse($path)
 	{
-		$this->validatePath($path);
-
 		$config = array();
+		if ($this->validatePath($path))
+		{
+			require($path);
+		}
+
 
 		/*
 		 * $config is the array found in ALL PHP  config files stored in $this->pathToConfig/

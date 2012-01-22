@@ -26,5 +26,9 @@ abstract class ConfigParser
 		{
 			throw new SereneException\FileNotFound("Config file {$path} does not exist!");
 		}
+		else
+		{
+			return true;
+		}
 	}
 }
