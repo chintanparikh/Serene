@@ -7,6 +7,7 @@ class PHP extends Base\ConfigParser
 {
 	public function parse($path)
 	{
+		$config = false;
 		if (file_exists($path))
 		{
 			require($path);
