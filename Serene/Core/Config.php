@@ -129,8 +129,16 @@ class Config
 		if (!isset($config[$filename]))
 		{
 			$path = $this->pathToConfig . $filename . '.' . $type;
-			$function = '_load' . $type . 'Config';
-			return $this->$function($path);
+			$class = "Serene\\Core\\ConfigParsers\\{$type}";
+			if (class_exists($class) && is_subclass_of($class, 'Serene\\Core\\Base\\ConfigParser'))
+			{
+				$parser = new $class;
+				return $parser->parse($path);
+			}
+			else
+			{
+				throw new \Exception('Config Parser type not supported!');	
+			}
 		}
 	}
 
@@ -177,74 +185,6 @@ class Config
 		return $this->configCache[$configFile][$property];
 	}
 
-	private function _loadPHPConfig($path)
-	{
-		if (file_exists($path))
-		{
-			require($path);
-		}
-		else
-		{
-			throw new \Exception("Config file {$path} does not exist!");
-		}
-		/*
-		 * $config is the array found in ALL PHP  config files stored in $this->pathToConfig/
-		 */
-		return $config;
-	}
-
-	private function _loadINIConfig($path)
-	{
-		if (file_exists($path))
-		{
-			$config = parse_ini_file($path, true);
-		}
-		else
-		{
-			throw new \Exception("Config file {$path} does not exist!"); 
-		}
-		return $config;
-	}
-
-	private function _loadXMLConfig($path)
-	{
-		if (file_exists($path))
-		{
-			$raw = file_get_contents($path);
-			$xml = new SimpleXMLElement($raw);
-
-			$vars = get_object_vars($xml);
-			foreach ($vars as $key=>$value)
-			{
-				$name = $key;
-			}
-			
-			// Remove the comments field (uncessary, and we don't need it))
-			unset($xml->$name->comment);
-			$config[$name] = get_object_vars($xml->$name);
-		}
-		else
-		{
-			throw new \Exception("Config file {$path} does not exist!"); 
-		}
-
-		return $config;
-	}
-
-	private function _loadJSONConfig($path)
-	{
-		if (file_exists($path))
-		{
-			$raw = file_get_contents($path);
-			$config = json_decode($file, true);
-		}
-		else
-		{
-			throw new \Exception("Config file {$path} does not exist!"); 
-		}
-
-		return $config;
-	}
-	
+		
 }
 
