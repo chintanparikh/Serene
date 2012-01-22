@@ -9,8 +9,7 @@ class XML extends Base\ConfigParser
 	{
 		if (file_exists($path))
 		{
-			$raw = file_get_contents($path);
-			$xml = new SimpleXMLElement($raw);
+			$xml = simplexml_load_file($path);
 
 			$vars = get_object_vars($xml);
 			foreach ($vars as $key=>$value)
