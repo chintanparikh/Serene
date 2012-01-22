@@ -11,7 +11,8 @@ class FileNotFound extends \Exception
 
 	public function __construct($path)
 	{
-		parent::__construct("Config file {$path} does not exist");
+		$this->path = $path;
+		parent::__construct("{$path} does not exist");
 	}
 
 	public function getPath()
