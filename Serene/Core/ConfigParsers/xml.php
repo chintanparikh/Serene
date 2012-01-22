@@ -7,6 +7,7 @@ class XML extends Base\ConfigParser
 {
 	public function parse($path)
 	{
+		$config = array();
 		if (file_exists($path))
 		{
 			$xml = simplexml_load_file($path);
