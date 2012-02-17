@@ -25,6 +25,7 @@ abstract class ConfigParser
 		if (!file_exists($path))
 		{
 			throw new SereneException\FileNotFound($path);
+			return false;
 		}
 		else
 		{

@@ -3,7 +3,7 @@
 namespace Serene\Core\ConfigParsers;
 use Serene\Core\Base as Base;
 
-class XML extends Base\ConfigParser
+class JSON extends Base\ConfigParser
 {
 	public function parse($path)
 	{

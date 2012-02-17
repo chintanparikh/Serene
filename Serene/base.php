@@ -4,6 +4,7 @@
 */
 namespace Serene;
 use Serene\Core as Core;
+use Serene\Core\Exception as SereneException;
 
 class Application
 {
@@ -18,11 +19,18 @@ class Application
 
 	public function start()
 	{
-		spl_autoload_register('Serene\Core\Autoload::autoload');
-		$this->config = Core\Config::getInstance();
-		$this->load = new Core\Load($this->config);
-		$this->router = new Core\Router($this->config);
-		$this->dispatcher = new Core\Dispatcher($this->load, $this->router->getRoute());
+		try
+		{
+			spl_autoload_register('Serene\Core\Autoload::autoload');
+			$this->config = Core\Config::getInstance();
+			$this->load = new Core\Load($this->config);
+			$this->router = new Core\Router($this->config);
+			$this->dispatcher = new Core\Dispatcher($this->load, $this->router->getRoute());
+		}
+		catch (SereneException\FileNotFound $e)
+		{
+			print "Error: {$e->getPath()} does not exist!";
+		}
 	}
 
 
