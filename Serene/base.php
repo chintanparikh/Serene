@@ -26,6 +26,7 @@ class Application
 			$this->load = new Core\Load($this->config);
 			$this->router = new Core\Router($this->config);
 			$this->dispatcher = new Core\Dispatcher($this->load, $this->router->getRoute());
+			$this->input = new Core\Input($this->config);
 		}
 		catch (SereneException\FileNotFound $e)
 		{
