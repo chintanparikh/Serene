@@ -6,3 +6,6 @@ It is still heavily under development, and I plan to implement namespaces and (p
 It's unlikely I'll start developing this framework again. However, it definitely did teach me a lot about OOD.
 To anyone looking for examples of my code, check out anything in /Core. I'm definitely proud of the Route/Router/Dispatcher combo,
 as well as Config + ConfigParsers.
+
+I'm releasing everything here under the MIT license (http://opensource.org/licenses/MIT).
+Go crazy.
