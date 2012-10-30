@@ -1,3 +1,8 @@
 Serene is a lightweight PHP framework that I'm developing for my own use (and as an educational experience).
 
 It is still heavily under development, and I plan to implement namespaces and (possibly) traits, as well cleaning up and refactoring the code to better follow SOLID principles.
+
+--- Development stopped as of Oct 30, 2012 ----
+It's unlikely I'll start developing this framework again. However, it definitely did teach me a lot about OOD.
+To anyone looking for examples of my code, check out anything in /Core. I'm definitely proud of the Route/Router/Dispatcher combo,
+as well as Config + ConfigParsers.

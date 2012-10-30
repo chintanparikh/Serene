@@ -1,0 +1,3 @@
+Serene is a lightweight PHP framework that I'm developing for my own use (and as an educational experience).
+
+It is still heavily under development, and I plan to implement namespaces and (possibly) traits, as well cleaning up and refactoring the code to better follow SOLID principles.
