@@ -13,16 +13,14 @@ class Test extends Base\Controller
 	}
 	public function index()
 	{
-		print 'index';
 	}
 
 	public function test()
 	{
-		print 'YAY';
 		$args = func_get_args();
 		foreach ($args as $argument)
 		{
-			print $argument;
+			// Do something
 		}
 	}
 }
